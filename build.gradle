@@ -1,0 +1,55 @@
+plugins {
+    id 'com.github.ksoichiro.build.info' version '0.2.0'
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+task fatJar(type: Jar) {
+    baseName = project.name
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } } 
+    with jar 
+}
+
+configurations {
+    includeInJar
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/com.lmax/disruptor
+    compile group: 'com.lmax', name: 'disruptor', version: '3.2.0'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'src'
+        }
+    }   
+}
+
+jar {
+    baseName "LAMXTest"
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    into('lib') {
+        //println "includeInJar: " + configurations.includeInJar.collect { File file -> file }
+        //from configurations.includeInJar
+
+        //from 'myLib'
+    }
+    manifest {
+        attributes (
+            "Main-Class": "com.ck.fastq.Starter"
+        )
+    }
+}
