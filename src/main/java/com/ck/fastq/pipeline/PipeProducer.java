@@ -1,8 +1,7 @@
 package com.ck.fastq.pipeline;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.Arrays;
 import java.util.concurrent.BlockingQueue;
 
 /**
@@ -11,9 +10,25 @@ import java.util.concurrent.BlockingQueue;
 public class PipeProducer<N> {
 
     private BlockingQueue<N> queue;
+    private Broker<N> broker;
 
-    public PipeProducer(N q) {
-        this.queue = (BlockingQueue<N>) q;
+    public PipeProducer(Broker<N> broker) {
+        this.queue = broker.getQ();
+        this.broker = broker;
+    }
+
+    public void produceFromByteBuffer() {
+        try (BufferedInputStream bis = new BufferedInputStream(System.in)) {
+            byte[] buff = new byte[1024*1024];
+            int nRead;
+            while((nRead = bis.read(buff, 0, buff.length)) != -1) {
+                byte[] realPack = Arrays.copyOfRange(buff, 0, nRead);
+                broker.put((N)realPack);
+            }
+            broker.stopQueue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void produce() {
@@ -23,6 +38,7 @@ public class PipeProducer<N> {
             while ((line = br.readLine()) != null) {
                 queue.put((N)line);
             }
+            broker.stopQueue();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

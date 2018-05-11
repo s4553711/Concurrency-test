@@ -4,6 +4,7 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'idea'
+apply plugin: 'application'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -40,16 +41,15 @@ sourceSets {
 
 jar {
     baseName "LAMXTest"
+    version "0.1"
+    appendix "dev"
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    into('lib') {
-        //println "includeInJar: " + configurations.includeInJar.collect { File file -> file }
-        //from configurations.includeInJar
-
-        //from 'myLib'
-    }
+    into('lib') {}
     manifest {
         attributes (
             "Main-Class": "com.ck.fastq.Starter"
         )
     }
 }
+
+mainClassName = "com.ck.fastq.Starter"
