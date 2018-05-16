@@ -13,7 +13,7 @@ import java.util.concurrent.*;
  */
 public class Starter {
     public static void main(String args[]) {
-        System.out.println("Pipeline start");
+        System.err.println("Pipeline start");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss.SSS");
         ExecutorService service = Executors.newFixedThreadPool(2);
@@ -22,30 +22,31 @@ public class Starter {
         PipeProducer<byte[]> producer = new PipeProducer(broker);
         StdConsumer<byte[]> consumer = new StdConsumer(broker);
 
-        service.submit(() -> {
-            consumer.consume_iterator();
-            //consumer.consume();
-        });
         Future f = service.submit(() -> {
             //producer.produce();
             producer.produceFromByteBuffer();
         });
+        Future c = service.submit(() -> {
+            consumer.consume_iterator();
+            //consumer.consume();
+        });
         long st = System.currentTimeMillis();
-        System.out.println("Start: "+sdf.format(new Timestamp(st)));
+        System.err.println("Start: "+sdf.format(new Timestamp(st)));
 
         try {
             f.get();
+            c.get();
             long endt = System.currentTimeMillis();
-            System.out.println("End: "+sdf.format(new Timestamp(endt)));
-            System.out.println("Dif: "+(endt - st));
+            System.err.println("End: "+sdf.format(new Timestamp(endt)));
+            System.err.println("Dif: "+(endt - st));
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
-        System.out.println("Service shutdown start");
+        System.err.println("Service shutdown start");
         service.shutdown();
-        System.out.println("Service shutdown end");
+        System.err.println("Service shutdown end");
     }
 }

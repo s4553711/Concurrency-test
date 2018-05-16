@@ -12,9 +12,6 @@ public class StdConsumer<N> {
     private BlockingQueue<N> queue;
     private Broker<N> broker;
 
-//    public StdConsumer(N q) {
-//        this.queue = (BlockingQueue<N>) q;
-//    }
     public StdConsumer(Broker<N> broker) {
         this.queue = broker.getQ();
         this.broker = broker;
@@ -23,17 +20,12 @@ public class StdConsumer<N> {
     public void consume_iterator() {
         FastqQueueReader<N> reader = new FastqQueueReader(broker);
         int i = 0;
-        while(broker.isRunning()) {
-            if ((i % 100) == 0) System.out.println("Running .. " + i);
-            while (reader.hasNext()) {
-                if ((i % 100) == 0) System.out.println("Next .. " + i);
-                N data = reader.read();
-                i++;
-                //System.out.println("leng :: "+((byte[])data).length);
-//                for(byte b : (byte[])data) {
-//                    System.err.print((char)b);
-//                }
-//                System.err.println("-----");
+        while(broker.isRunning() || reader.hasNext()) {
+            if (i % 5000 == 0) System.err.println("Progress > Next .. " + i);
+            N data = reader.read();
+            i++;
+            for(byte b : (byte[])data) {
+                System.out.print((char)b);
             }
         }
 

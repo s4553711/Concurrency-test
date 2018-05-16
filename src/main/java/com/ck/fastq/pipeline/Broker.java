@@ -26,7 +26,7 @@ public class Broker<N> {
     }
 
     public N poll() throws InterruptedException {
-        return this.queue.poll(100, TimeUnit.MILLISECONDS);
+        return this.queue.poll(250, TimeUnit.MILLISECONDS);
     }
 
     public BlockingQueue<N> getQ() {

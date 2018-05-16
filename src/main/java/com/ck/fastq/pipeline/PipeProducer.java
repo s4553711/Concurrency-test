@@ -19,7 +19,7 @@ public class PipeProducer<N> {
 
     public void produceFromByteBuffer() {
         try (BufferedInputStream bis = new BufferedInputStream(System.in)) {
-            byte[] buff = new byte[1024*1024];
+            byte[] buff = new byte[100 * 1024 * 1024]; // 200 * 1024 * 1024
             int nRead;
             while((nRead = bis.read(buff, 0, buff.length)) != -1) {
                 byte[] realPack = Arrays.copyOfRange(buff, 0, nRead);
