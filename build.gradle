@@ -26,6 +26,10 @@ configurations {
 dependencies {
     // https://mvnrepository.com/artifact/com.lmax/disruptor
     compile group: 'com.lmax', name: 'disruptor', version: '3.2.0'
+    compile group: 'org.jctools', name: 'jctools-core', version: '2.1.1'
+    compile group: 'org.springframework', name: 'spring-core', version: '4.3.17.RELEASE'
+    compile group: 'io.netty', name: 'netty-all', version: '4.1.1.Final'
+    //compile group: 'com.conversantmedia', name: 'disruptor', version: '1.2.11'
 }
 
 sourceSets {

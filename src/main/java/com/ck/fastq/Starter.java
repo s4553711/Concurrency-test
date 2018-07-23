@@ -23,10 +23,12 @@ public class Starter {
         StdConsumer<byte[]> consumer = new StdConsumer(broker);
 
         Future f = service.submit(() -> {
+            Thread.currentThread().setName("Producer");
             //producer.produce();
             producer.produceFromByteBuffer();
         });
         Future c = service.submit(() -> {
+            Thread.currentThread().setName("Consumer");
             consumer.consume_iterator();
             //consumer.consume();
         });
@@ -45,6 +47,7 @@ public class Starter {
             e.printStackTrace();
         }
 
+        //broker.getStatistics();
         System.err.println("Service shutdown start");
         service.shutdown();
         System.err.println("Service shutdown end");
